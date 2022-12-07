@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import base64
 from streamlit_lottie import st_lottie
+import matplotlib.pyplot as plt
 
 
 # For more emojis code https://www.webfx.com/tools/emoji-cheat-sheet/
@@ -60,6 +61,20 @@ st.write('Data Dimension: ' + str(df_selected_team.shape[0]) + ' rows and ' + st
 # st.dataframe(df_selected_team)
 test = df_selected_team.astype(str)
 st.dataframe(test)
+
+# adding pie chart
+st.subheader("Top 5 Points per game stats for the current selected team(s)")
+pts_column= test.loc[:,"PTS"].astype(float)
+large5 = pts_column.nlargest(5, keep= "all")
+fig1, ax1 = plt.subplots()
+ax1.pie(large5, autopct= lambda x: '{:1.1f}'.format(x*large5.sum()/100),
+        shadow=True, startangle=90)
+ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+st.pyplot(fig1)
+
+# testing player  and pts stats dataframe
+player_and_pts_stats = test[["Player","PTS"]]
+st.dataframe(player_and_pts_stats)
 
 # Download WNBA player stats data
 # https://discuss.streamlit.io/t/how-to-download-file-in-streamlit/1806
