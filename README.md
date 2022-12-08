@@ -2,7 +2,7 @@
 here will be a direct access to app
 
 # Demo
-here will be a gif or video
+![WNBA](https://user-images.githubusercontent.com/62731591/206565459-23f9c58a-29ff-4cb3-ba9f-0bc62416ce17.gif)
 
 # Architecture
 <img width="1003" alt="Architecture" src="https://user-images.githubusercontent.com/62731591/206553023-b59d14b8-7956-4130-9075-72e327028467.png">
