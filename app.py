@@ -1,33 +1,34 @@
+from pathlib import Path
 import requests
 import streamlit as st
 import pandas as pd
 import base64
-from streamlit_lottie import st_lottie
 import matplotlib.pyplot as plt
 
 
 # For more emojis code https://www.webfx.com/tools/emoji-cheat-sheet/
 st.set_page_config(page_title="WNBA Stats", page_icon=":basketball:")
 
-# retrieve lottie animation from the web
+# displaying image
+def img_to_bytes(img_path):
+    img_bytes = Path(img_path).read_bytes()
+    encoded = base64.b64encode(img_bytes).decode()
+    return encoded
 
-def load_lottieur(url):
-    r = requests.get(url)
-    if r.status_code != 200:
-        return None
-    return r.json()
 
-# animation link from the LottieFiles web page
-lottie_coding = load_lottieur("https://assets10.lottiefiles.com/packages/lf20_urtuxtsf.json")
+header_html = "<img src='data:image/png;base64,{}' class='img-fluid'>".format(
+    img_to_bytes("WNBA_header.png")
+)
+st.markdown(
+    header_html, unsafe_allow_html=True,
+)
 
-# inserting lottie into web page
-# st_lottie(lottie_coding, height=200, key="basketball animation")
-
+# description of web app
 st.title('WNBA Player Stats Explorer')
 
 st.markdown("""
 This app performs webscraping of WNBA player stats data per game
-* **Data source:** [Basketball-reference.com](https://www.basketball-reference.com/).
+* **Data source:** [Basketball-reference.com](https://www.basketball-reference.com/)
 """)
 
 st.sidebar.header('Select Criteria Below')
@@ -53,28 +54,41 @@ selected_team = st.sidebar.multiselect('Team', sorted_unique_team, sorted_unique
 unique_pos = ['C','F','G','F-G','C-F']
 selected_pos = st.sidebar.multiselect('Position', unique_pos, unique_pos)
 
+
 # Filtering data
 df_selected_team = playerstats[(playerstats.Team.isin(selected_team)) & (playerstats.Pos.isin(selected_pos))]
 
 st.header('Display Player Stats of Selected Team(s) and Position(s)')
-st.write('Data Dimension: ' + str(df_selected_team.shape[0]) + ' rows and ' + str(df_selected_team.shape[1]) + ' columns.')
+st.markdown("""
+** 👈 You can change criteria on the left side menu** 
+""")
+st.info('Data Dimension: ' + str(df_selected_team.shape[0]) + ' rows and ' + str(df_selected_team.shape[1]) + ' columns.')
 # st.dataframe(df_selected_team)
 test = df_selected_team.astype(str)
 st.dataframe(test)
 
-# adding pie chart
-st.subheader("Top 5 Points per game stats for the current selected team(s)")
-pts_column= test.loc[:,"PTS"].astype(float)
-large5 = pts_column.nlargest(5, keep= "all")
-fig1, ax1 = plt.subplots()
-ax1.pie(large5, autopct= lambda x: '{:1.1f}'.format(x*large5.sum()/100),
-        shadow=True, startangle=90)
-ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-st.pyplot(fig1)
+# container with side by side columns
+col1, col2 = st.columns([3,2])
 
+# column 1
+# adding pie chart
+with col1:
+    st.subheader("Top 5 Points per game stats for the current selected team(s)👇")
+    pts_column= test.loc[:,"PTS"].astype(float)
+    large5 = pts_column.nlargest(5, keep= "all")
+    fig1, ax1 = plt.subplots()
+    ax1.pie(large5, autopct= lambda x: '{:1.1f}'.format(x*large5.sum()/100),
+            shadow=True, startangle=90)
+    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    st.pyplot(fig1)
+
+# column 2
 # testing player  and pts stats dataframe
-player_and_pts_stats = test[["Player","PTS"]]
-st.dataframe(player_and_pts_stats)
+with col2:
+    player_and_pts_stats = test[["Player","PTS"]]
+    st.caption("PPG Dataframe")
+    st.dataframe(player_and_pts_stats)
+
 
 # Download WNBA player stats data
 # https://discuss.streamlit.io/t/how-to-download-file-in-streamlit/1806
