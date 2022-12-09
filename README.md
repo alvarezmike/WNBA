@@ -1,5 +1,5 @@
 # WNBA
-here will be a direct access to app
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://wnbastat.streamlit.app/)
 
 # Demo
 ![WNBA](https://user-images.githubusercontent.com/62731591/206565459-23f9c58a-29ff-4cb3-ba9f-0bc62416ce17.gif)
