@@ -1,5 +1,4 @@
 from pathlib import Path
-import requests
 import streamlit as st
 import pandas as pd
 import base64
