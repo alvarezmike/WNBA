@@ -31,7 +31,7 @@ This app performs webscraping of WNBA player stats data per game
 """)
 
 st.sidebar.header('Select Criteria Below')
-selected_year = st.sidebar.selectbox('Year', list(reversed(range(1997,2022))))
+selected_year = st.sidebar.selectbox('Year', list(reversed(range(1997,2023))))
 
 # Web scraping of WNBA player stats
 @st.cache
